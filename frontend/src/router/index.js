@@ -40,9 +40,8 @@ router.beforeEach(async (to, from, next) => {
   let response = await Vue.axios.get("/api/whoami");
 
   //response.data is our payload
-  //Get the loggedIn state directly from the response
   await store.dispatch("setLoggedInUser", response.data);
-  let isLoggedIn = response.data.loggedIn;
+  let isLoggedIn = store.state.isLoggedIn;
   console.log(isLoggedIn);
 
   if(to.name === "Login" && isLoggedIn){
