@@ -2,6 +2,7 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
+<!--        Welcome to 3D-printer reservation site-->
         <v-img
           alt="Vuetify Logo"
           class="shrink mr-2"
