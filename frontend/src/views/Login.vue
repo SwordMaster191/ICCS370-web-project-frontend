@@ -17,15 +17,17 @@
           required
         ></v-text-field>
 
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="submit">
-          Login
-        </v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="submit"> Login </v-btn>
+
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="register"> Register </v-btn>
 
         <v-btn color="error" class="mr-4" @click="reset"> Reset </v-btn>
+
       </v-form>
     </template>
   </v-container>
 </template>
+
 <script>
 import Vue from "vue";
 export default {
@@ -33,11 +35,12 @@ export default {
     valid: true,
     username: "",
     password: "",
-    usernameRules: [(v) => !!v || "Userame is required"],
+    usernameRules: [(v) => !!v || "Username is required"],
     passwordRules: [(v) => !!v || "Password is required"],
   }),
 
   methods: {
+
     async submit() {
       if (this.$refs.form.validate()) {
         //if valid, submit to backend
@@ -52,9 +55,15 @@ export default {
       }
       console.log(this.username, this.password);
     },
+
     reset() {
       this.$refs.form.reset();
     },
+
+    register() {
+      this.$router.go({ path: "/register" });
+    },
+
   },
 };
 </script>
