@@ -2,14 +2,13 @@
   <v-container>
     <div align="center">
       <h1>Welcome to 3D-printer reservation</h1>
-      <div class="my-5">
-        <v-btn x-large color="success" class="mr-4" @click="book">
-          Book a schedule</v-btn
+      <v-col class="text-right">
+        <v-btn color="error" class="ma-2" @click="logout">
+          Log out</v-btn
         >
-      </div>
+      </v-col>
     </div>
-    <h2>Your current reservations:</h2>
-
+    <h2>Your reservations:</h2>
     <div v-for="user in userDetails" :key="user">
       <div v-for="(startTime, endTime, date) in user" :key="startTime">
         <v-card class="mx-auto" max-width="344">
@@ -29,30 +28,13 @@
           </v-card-actions>
         </v-card>
       </div>
-      <!--      <v-card-->
-      <!--          color="#45b6fe"-->
-      <!--          dark-->
-      <!--          elevation="1"-->
-      <!--          outlined-->
-      <!--          tiled-->
-      <!--      >-->
-      <!--        <v-card-title class="text-h5">-->
-      <!--          TIME: to from, DATE-->
-      <!--        </v-card-title>-->
+    </div>
 
-      <!--        <v-card-subtitle>Reservation under student id, {{ user }}</v-card-subtitle>-->
-
-      <!--        <v-card-actions>-->
-      <!--          <v-btn-->
-      <!--              color="red"-->
-      <!--              outlined-->
-      <!--              rounded-->
-      <!--              text-->
-      <!--          >-->
-      <!--            Delete reservation-->
-      <!--          </v-btn>-->
-      <!--        </v-card-actions>-->
-      <!--      </v-card>-->
+    <h2>Current reservations:</h2>
+    <div align="center">
+      <div class="my-5">
+        <Book></Book>
+      </div>
     </div>
 
     <v-row class="fill-height">
@@ -120,13 +102,6 @@
             <v-card color="grey lighten-4" min-width="350px" flat>
               <v-toolbar :color="selectedEvent.color" dark>
                 <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-                <!--                <v-spacer></v-spacer>-->
-                <!--                <v-btn icon>-->
-                <!--                  <v-icon>mdi-heart</v-icon>-->
-                <!--                </v-btn>-->
-                <!--                <v-btn icon>-->
-                <!--                  <v-icon>mdi-dots-vertical</v-icon>-->
-                <!--                </v-btn>-->
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.details"></span>
@@ -147,14 +122,15 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import Vue from "vue";
+import Book from "./Book.vue";
 
 export default {
   name: "Home",
-  components: {},
+  components: {
+    Book,
+  },
   data: () => ({
     userDetails: {
-      // firstName: "",
-      // lastName: "",
       userName: "",
       id: "",
       startTime: "",
@@ -195,10 +171,10 @@ export default {
     this.$refs.calendar.checkChange();
   },
   methods: {
-    async book() {
-      // check if user session valid, then book-able
-      this.$router.push({ path: "/booking" });
-    },
+    // async book() {
+    //   // check if user session valid, then book-able
+    //   this.$router.push({ path: "/booking" });
+    // },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
