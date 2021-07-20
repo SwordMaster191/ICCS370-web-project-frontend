@@ -65,16 +65,12 @@ router.beforeEach(async (to, from, next) => {
 
   await store.dispatch("clearUser", response.data);
 
-  if(to.name == "Login" && isLoggedIn){
+  if((to.name == "Login" || to.name == "Register") && isLoggedIn){
     next({name: "Home"});
-  }
-
-  if (to.name == "Register" && !isLoggedIn) {
-    next({name: "Register"})
   }
   //make sure if user is logged in, they will not be able to see the login page
   //if the name of the router is not login, it needs authorization to access the page.
-  if (to.name != "Login" && !isLoggedIn) {
+  if (to.name != "Login"  && to.name != "Register" && !isLoggedIn) {
     next({name: "Login" })
   }
   else next(); //else let go
