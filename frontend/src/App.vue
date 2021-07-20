@@ -1,25 +1,18 @@
 <template>
+
   <v-app>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app color="blue" dark>
       <div class="d-flex align-center">
 <!--        Welcome to 3D-printer reservation site-->
         <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
+            src="frontend/src/assets/Logo2.png"
+            max-height="50"
+            max-width="100"
+            contain
         />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <v-toolbar-title>3D Printing Booking Service</v-toolbar-title>
+
       </div>
 
       <v-spacer></v-spacer>
@@ -29,7 +22,7 @@
         target="_blank"
         text
       >
-        <span class="mr-2">{{ $store.state.name }}</span>
+        <span>{{ $store.state.name }}</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
