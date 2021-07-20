@@ -57,6 +57,7 @@
             <v-dialog v-model="dialog" max-width="290">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
+                  :disabled="!valid"
                   rounded
                   block
                   color="primary"
@@ -110,6 +111,7 @@
 <script>
 export default {
   data: () => ({
+    valid: true,
     username: "",
     password: "",
     confirmPassword: "",
@@ -138,7 +140,15 @@ export default {
       if (username == "" || password == "" || confirmPassword == "") {
         this.dialog = false;
         alert("Please complete the form");
-        this.$router.push({ path: "/register" });
+        this.$refs.form.reset();
+      }
+      else if (password != confirmPassword) {
+        this.dialog = false;
+        alert("Password does not match");
+        this.$refs.form.reset();
+      }
+      else{
+        this.$router.push({ path: "/login" });
       }
     },
 
