@@ -6,6 +6,7 @@
         <v-btn x-large color="success" class="mr-4" @click="book">
           Book a schedule</v-btn
         >
+        <v-btn x-large color="error" class="mr-4" @click="logout">Logout</v-btn>
       </div>
     </div>
     <h2>Your current reservations:</h2>
@@ -261,6 +262,12 @@ export default {
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
+    async logout () {
+      const response = await Vue.axios.post("/api/login")
+      if (response.data.success){
+        this.$router.push({ path: "/login" });
+      }
+    }
   },
 };
 </script>

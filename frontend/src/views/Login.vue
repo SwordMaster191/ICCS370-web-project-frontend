@@ -19,7 +19,7 @@
 
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="submit"> Login </v-btn>
 
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="register"> Register </v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="register()"> Register </v-btn>
 
         <v-btn color="error" class="mr-4" @click="reset"> Reset </v-btn>
 
@@ -60,8 +60,8 @@ export default {
       this.$refs.form.reset();
     },
 
-    register() {
-      this.$router.go({ path: "/register" });
+    async register() {
+      this.$router.push({path: "/register"});
     },
 
   },

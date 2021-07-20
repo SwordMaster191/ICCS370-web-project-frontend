@@ -37,6 +37,15 @@ const routes = [
     component: () =>
         import(/* webpackChunkName: "about" */ "../views/Register.vue"),
   },
+  {
+    path: "/booking",
+    name: "Book",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+        import(/* webpackChunkName: "about" */ "../views/Book.vue"),
+  },
 ];
 
 const router = new VueRouter({
@@ -53,18 +62,18 @@ router.beforeEach(async (to, from, next) => {
   let isLoggedIn = store.state.isLoggedIn;
   console.log(isLoggedIn);
 
+  await store.dispatch("clearUser", response.data);
+
   if(to.name == "Login" && isLoggedIn){
     next({name: "Home"});
   }
   //make sure if user is logged in, they will not be able to see the login page
   //if the name of the router is not login, it needs authorization to access the page.
   if (to.name != "Login" && !isLoggedIn) {
-    //redirect to login
-    next({name: "Login"})
     if (to.name == "Register") {
-      //redirect to register
       next({name: "Register"})
     }
+    next({name: "Login" })
   }
   else next(); //else let go
 });
