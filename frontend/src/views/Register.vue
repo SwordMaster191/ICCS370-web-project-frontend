@@ -73,7 +73,7 @@
             <v-btn
                 color="green darken-1"
                 text
-                @click="dialog = false"
+                @click="submit"
             >
               Agree
             </v-btn>
@@ -94,6 +94,8 @@ export default {
       show1: false,
       show2: false,
     },
+    dialog: false,
+
       min: [v => v.length >= 8 || "Min 8 characters"],
       match:[() => (`The password you entered doesn't match`)],
   }),
