@@ -115,13 +115,12 @@
                       sm="6"
                       md="4"
                   >
-                    <v-menu
-                        v-model="menu"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
+                    <v-dialog
+                        ref="dialog3"
+                        v-model="modal3"
+                        :return-value.sync="date"
+                        persistent
+                        width="290px"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
@@ -135,9 +134,25 @@
                       </template>
                       <v-date-picker
                           v-model="date"
-                          @input="menu = false"
-                      ></v-date-picker>
-                    </v-menu>
+                          scrollable
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            text
+                            color="primary"
+                            @click="modal3 = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dialog3.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
                   </v-col>
                 </v-row>
 
@@ -156,7 +171,7 @@
             <v-btn
                 color="blue darken-1"
                 text
-                @click="dialog = false"
+                @click="bookSchedule"
             >
               Book schedule
             </v-btn>
@@ -180,14 +195,27 @@ export default {
     endTime: null,
     modal1: false,
     modal2: false,
-    menu: false,
+    modal3: false,
     date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
     valid: true,
     dialog: false,
     dialog1: false,
     dialog2: false,
+    dialog3: false,
   }),
   methods: {
+    async bookSchedule() {
+      let formData = new FormData();
+      formData.append("startTime", this.startTime);
+      formData.append("endTime", this.endTime);
+      formData.append("data", this.date);
+      let response = await Vue.axios.post("/api/book", formData);
+
+      if (response.data.success) {
+        this.$router.push({ path: "/" });
+      }
+      console.log(this.startTime, this.endTime, this.date);
+    }
   },
 };
 </script>
