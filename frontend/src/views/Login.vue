@@ -154,6 +154,9 @@ export default {
         if (response.data.success) {
           this.$router.push({ path: "/" });
         }
+        else{
+
+        }
       }
       console.log(this.username, this.password);
     },
