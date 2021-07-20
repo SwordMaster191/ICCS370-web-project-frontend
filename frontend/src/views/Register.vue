@@ -110,6 +110,7 @@
 <script>
 export default {
   data: () => ({
+    username: "",
     password: "",
     confirmPassword: "",
     dialog: false,
@@ -129,7 +130,16 @@ export default {
 
   methods: {
     async submit() {
-      await this.$router.push({ path: "/login" });
+
+      let username = this.username;
+      let password = this.password;
+      let confirmPassword = this.confirmPassword;
+
+      if (username == "" || password == "" || confirmPassword == "") {
+        this.dialog = false;
+        alert("Please complete the form");
+        this.$router.push({ path: "/register" });
+      }
     },
 
     back() {
