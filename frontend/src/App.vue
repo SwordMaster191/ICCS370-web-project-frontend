@@ -13,8 +13,6 @@
         <v-toolbar-title>3D Printing Booking Service</v-toolbar-title>
       </div>
 
-      <v-spacer></v-spacer>
-
       <v-btn href="" target="_blank" text>
         <span>{{ $store.state.name }}</span>
         <v-icon>mdi-open-in-new</v-icon>
@@ -22,7 +20,7 @@
     </v-app-bar>
 
     <v-main>
-      <router-view />
+        <router-view />
     </v-main>
   </v-app>
 </template>
