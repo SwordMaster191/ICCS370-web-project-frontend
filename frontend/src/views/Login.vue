@@ -155,7 +155,8 @@ export default {
           this.$router.push({ path: "/" });
         }
         else{
-
+          alert("User does not exist");
+          this.$refs.form.reset();
         }
       }
       console.log(this.username, this.password);
