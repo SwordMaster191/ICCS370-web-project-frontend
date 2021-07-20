@@ -39,8 +39,8 @@
     </v-form>
 
     <v-btn :disabled="!valid" color="success" class="mr-4" @click="submit"> Submit </v-btn>
+    <v-btn color="warning" class="mr-4" @click="back"> Back </v-btn>
     <v-btn color="error" class="mr-4" @click="reset"> Reset </v-btn>
-
   </div>
 </template>
 
@@ -60,7 +60,11 @@ export default {
   methods: {
 
     async submit() {
+      await this.$router.push({path: "/login"});
+    },
 
+    back(){
+     this.$router.push({ path: "/login" });
     },
 
     reset() {
