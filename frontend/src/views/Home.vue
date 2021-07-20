@@ -232,7 +232,7 @@ export default {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
     async logout () {
-      const response = await Vue.axios.post("/api/login")
+      let response = await Vue.axios.get("/api/logout")
       if (response.data.success){
         this.$router.push({ path: "/login" });
       }
