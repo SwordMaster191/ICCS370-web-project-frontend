@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div align="center">
-      <title>Home</title>
+        <title>Home</title>
       <h1>Welcome to 3D-printer reservation</h1>
             {{ allReservationDetails }}
       <v-col class="text-right">
@@ -14,15 +14,17 @@
     <v-container fluid>
       <v-row>
         <v-col v-for="currentReservation in allReservationDetails" :key="currentReservation">
-          <v-card class="mx-auto" max-width="300">
+          <v-card color="purple"
+                  dark class="mx-auto" max-width="300">
             <v-card-text>
               <div>Time • Date</div>
-              <p class="text-h5 text--primary">
+              <p class="text-h5">
                 {{ currentReservation.startTime }} - {{ currentReservation.endTime }} • {{ currentReservation.date }}
               </p>
               <p>3D-printer reservation</p>
               <p>
-                Time usage: {{ getTimeDifference(currentReservation.startTime, currentReservation.endTime) }}
+                Duration of usage:
+                {{ getTimeDifference(currentReservation.startTime, currentReservation.endTime) }} hr(s)
               </p>
             </v-card-text>
             <v-card-actions>
