@@ -170,10 +170,9 @@ export default {
     this.$refs.calendar.checkChange();
   },
   methods: {
-    // async book() {
-    //   // check if user session valid, then book-able
-    //   this.$router.push({ path: "/booking" });
-    // },
+    async book() {
+      this.$router.push({ path: "/booking" });
+    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";

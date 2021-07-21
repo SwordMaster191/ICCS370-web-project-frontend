@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 export default {
   data: () => ({
     valid: true,
@@ -132,7 +133,6 @@ export default {
 
   methods: {
     async submit() {
-
       let username = this.username;
       let password = this.password;
       let confirmPassword = this.confirmPassword;
@@ -148,7 +148,19 @@ export default {
         this.$refs.form.reset();
       }
       else{
-        this.$router.push({ path: "/login" });
+        let formData = new FormData();
+        formData.append("username", this.username);
+        formData.append("password", this.password);
+        let response = await Vue.axios.post("/api/register", formData);
+
+        if (response.data.success) {
+          alert("New account has been created.");
+          this.$router.push({ path: "/login" });
+        }
+        else {
+          alert("Username already exists. Please select a new username.")
+          this.$router.push({ path: "/register" });
+        }
       }
     },
 

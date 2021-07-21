@@ -212,6 +212,8 @@ export default {
       let response = await Vue.axios.post("/api/book", formData);
 
       if (response.data.success) {
+        alert("Reservation successful!\n" +
+            "Scheduled at "+this.startTime+" to "+this.endTime+" on "+this.date);
         this.$router.push({ path: "/" });
       }
       else {
