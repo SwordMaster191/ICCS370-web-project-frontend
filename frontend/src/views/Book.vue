@@ -191,8 +191,8 @@ export default {
   components: {
   },
   data: () => ({
-    startTime: null,
-    endTime: null,
+    startTime: "",
+    endTime: "",
     modal1: false,
     modal2: false,
     modal3: false,
@@ -208,11 +208,16 @@ export default {
       let formData = new FormData();
       formData.append("startTime", this.startTime);
       formData.append("endTime", this.endTime);
-      formData.append("data", this.date);
+      formData.append("date", this.date);
       let response = await Vue.axios.post("/api/book", formData);
 
       if (response.data.success) {
         this.$router.push({ path: "/" });
+      }
+      else {
+        alert(
+          "Reservation overlaps with current existing reservations. Please select another time/date."
+        );
       }
       console.log(this.startTime, this.endTime, this.date);
     }
