@@ -206,6 +206,7 @@ export default {
   methods: {
     async bookSchedule() {
       let formData = new FormData();
+      formData.append("username", this.$store.state.username);
       formData.append("startTime", this.startTime);
       formData.append("endTime", this.endTime);
       formData.append("date", this.date);
@@ -214,6 +215,7 @@ export default {
       if (response.data.success) {
         alert("Reservation successful!\n" +
             "Scheduled at "+this.startTime+" to "+this.endTime+" on "+this.date);
+
         this.$router.push({ path: "/" });
       }
       else {

@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <div align="center">
+      <title>Home</title>
       <h1>Welcome to 3D-printer reservation</h1>
       <v-col class="text-right">
         <v-btn color="error" class="ma-2" @click="logout">
@@ -8,27 +9,34 @@
         >
       </v-col>
     </div>
-    <h2>Your reservations:</h2>
-    <div v-for="user in userDetails" :key="user">
-      <div v-for="(startTime, endTime, date) in user" :key="startTime">
-        <v-card class="mx-auto" max-width="344">
-          <v-card-text>
-            <div>Time • Date</div>
-            <p class="text-h4 text--primary">
-              {{ startTime }} - {{ endTime }} • {{ date }}
-            </p>
-            <p>adjective</p>
-            <div class="text--primary">
-              well meaning and kindly.<br />
-              "a benevolent smile"
-            </div>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn text color="deep-purple accent-4"> Learn More </v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
-    </div>
+    <h2>You have {{allReservationDetails.length}} reservations:</h2>
+    <v-container fluid>
+      <v-row>
+        <v-col v-for="currentReservation in allReservationDetails" :key="currentReservation">
+          <v-card class="mx-auto" max-width="300">
+            <v-card-text>
+              <div>Time • Date</div>
+              <p class="text-h5 text--primary">
+                {{ currentReservation.startTime }} - {{ currentReservation.endTime }} • {{ currentReservation.date }}
+              </p>
+              <p>3D-printer reservation</p>
+              <p>
+                Time usage: {{ getTimeDifference(currentReservation.startTime, currentReservation.endTime) }}
+              </p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text color="red" @click="deleteCurrentUserReservation(
+                    currentReservation.startTime,
+                    currentReservation.endTime,
+                    currentReservation.date
+              )"> Cancel reservation </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+
 
     <h2>Current reservations:</h2>
     <div align="center">
@@ -123,18 +131,16 @@
 // eslint-disable-next-line no-unused-vars
 import Vue from "vue";
 import Book from "./Book.vue";
+
 export default {
   name: "Home",
   components: {
     Book,
   },
   data: () => ({
-    userDetails: {
-      userName: "",
-      id: "",
-      startTime: "",
-      endTime: "",
-    },
+    username: "",
+    currentUserReservations: [],
+    allReservationDetails: [],
     focus: "",
     type: "month",
     typeToLabel: {
@@ -168,8 +174,62 @@ export default {
   }),
   mounted() {
     this.$refs.calendar.checkChange();
+    this.username = this.$store.state.name;
+    Vue.axios.get("/api/allReservations").then(response => {
+      this.allReservationDetails = response.data;
+    })
   },
+  // computed: {
+  //
+  // },
   methods: {
+    // getTimeConversion(time) {
+    //   var timeFormat = new SimpleDateFormat("hh:mm aa");
+    //   return timeFormat.parse(time.getTime());
+    // },
+    getDateConversion(date) {
+      var dateFormat = new Date(date);
+      return dateFormat.toLocaleTimeString()
+    },
+    getTimeDifference(start, end) {
+      start = start.split(":");
+      end = end.split(":");
+      var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+      var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+      var diff = endDate.getTime() - startDate.getTime();
+      var hours = Math.floor(diff / 1000 / 60 / 60);
+      diff -= hours * 1000 * 60 * 60;
+      var minutes = Math.floor(diff / 1000 / 60);
+
+      if (hours < 0)
+        hours = hours + 24;
+
+      return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
+    },
+    // getAllReservationDetails() {
+    //   return ;
+    // },
+    async getCurrentUserReservationDetails() {
+      let formData = new FormData();
+      formData.append("username", this.$store.state.name)
+      let response = await Vue.axios.post("/api/currentUserReservations", formData)
+      return response.data;
+    },
+    async deleteCurrentUserReservation(startTime, endTime, date) {
+      let formData = new FormData();
+      formData.append("startTime", startTime);
+      formData.append("endTime", endTime);
+      formData.append("date", date)
+      let response = await Vue.axios.post("/api/deleteReservation", formData);
+
+      if (response.data.success) {
+        alert("Reservation cancelled.");
+        this.$router.push({ path: "/" });
+      }
+      else {
+        alert("Reservation cannot be cancelled.")
+      }
+    },
     async book() {
       this.$router.push({ path: "/booking" });
     },
