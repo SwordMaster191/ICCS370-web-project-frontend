@@ -3,6 +3,7 @@
     <div align="center">
       <title>Home</title>
       <h1>Welcome to 3D-printer reservation</h1>
+            {{ allReservationDetails }}
       <v-col class="text-right">
         <v-btn color="error" class="ma-2" @click="logout">
           Log out</v-btn
@@ -36,7 +37,6 @@
         </v-col>
       </v-row>
     </v-container>
-
 
     <h2>Current reservations:</h2>
     <div align="center">
@@ -177,20 +177,9 @@ export default {
     this.username = this.$store.state.name;
     Vue.axios.get("/api/allReservations").then(response => {
       this.allReservationDetails = response.data;
-    })
+    });
   },
-  // computed: {
-  //
-  // },
   methods: {
-    // getTimeConversion(time) {
-    //   var timeFormat = new SimpleDateFormat("hh:mm aa");
-    //   return timeFormat.parse(time.getTime());
-    // },
-    getDateConversion(date) {
-      var dateFormat = new Date(date);
-      return dateFormat.toLocaleTimeString()
-    },
     getTimeDifference(start, end) {
       start = start.split(":");
       end = end.split(":");
@@ -206,28 +195,30 @@ export default {
 
       return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
     },
-    // getAllReservationDetails() {
-    //   return ;
-    // },
     async getCurrentUserReservationDetails() {
       let formData = new FormData();
       formData.append("username", this.$store.state.name)
       let response = await Vue.axios.post("/api/currentUserReservations", formData)
       return response.data;
     },
+    reloadPage() {
+      window.location.reload();
+    },
     async deleteCurrentUserReservation(startTime, endTime, date) {
-      let formData = new FormData();
-      formData.append("startTime", startTime);
-      formData.append("endTime", endTime);
-      formData.append("date", date)
-      let response = await Vue.axios.post("/api/deleteReservation", formData);
+      if (confirm("Are you sure you want to cancel scheduled reservation at "+startTime+" to "+endTime+" on "+date+"?")) {
+        let formData = new FormData();
+        formData.append("startTime", startTime);
+        formData.append("endTime", endTime);
+        formData.append("date", date)
+        let response = await Vue.axios.post("/api/deleteReservation", formData);
 
-      if (response.data.success) {
-        alert("Reservation cancelled.");
-        this.$router.push({ path: "/" });
-      }
-      else {
-        alert("Reservation cannot be cancelled.")
+        if (response.data.success) {
+          alert("Reservation at "+startTime+" to "+endTime+" on "+date+" cancelled.");
+          this.reloadPage();
+        }
+        else {
+          alert("Reservation cannot be cancelled.")
+        }
       }
     },
     async book() {

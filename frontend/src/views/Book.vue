@@ -215,12 +215,12 @@ export default {
       if (response.data.success) {
         alert("Reservation successful!\n" +
             "Scheduled at "+this.startTime+" to "+this.endTime+" on "+this.date);
-
-        this.$router.push({ path: "/" });
+        window.location.reload();
       }
       else {
         alert(
-          "Reservation overlaps with current existing reservations. Please select another time/date."
+          "Reservation overlaps with current existing reservations.\n" +
+            "Please select another time/date."
         );
       }
       console.log(this.startTime, this.endTime, this.date);
