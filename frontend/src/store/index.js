@@ -5,9 +5,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    isLoggedIn: false,
     username: null,
     name: null,
-    roles: '',
+    role: '',
 
   },
   mutations: {
@@ -17,13 +18,13 @@ export default new Vuex.Store({
     },
     setUsername(state, username){
       console.log(username);
-      state.isLoggedIn = username;
+      state.username= username;
     },
     setName(state, name){
-      state.isLoggedIn = name;
+      state.name = name;
     },
     setRole(state, role){
-      state.isLoggedIn = role;
+      state.role = role;
     },
   },
   actions: {
