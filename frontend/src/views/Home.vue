@@ -109,12 +109,16 @@
           >
             <v-card color="grey lighten-4" min-width="350px" flat>
               <v-toolbar :color="selectedEvent.color" dark>
-                <v-toolbar-title v-html="selectedEvent.username"></v-toolbar-title>
+                <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               </v-toolbar>
-              <v-card-text>
-                <span v-html="selectedEvent.startTime"></span>
-                <span v-html="selectedEvent.endTime"></span>
-                <span v-html="selectedEvent.date"></span>
+              <v-card-text class="text-body-1 text--primary">
+                <p>{{selectedEvent.startTime}} to {{selectedEvent.endTime}} on {{selectedEvent.date}}</p>
+                <br/>
+                <p>{{selectedEvent.start}}</p>
+                <br/>
+                <p>to</p>
+                <br/>
+                <p>{{selectedEvent.end}}</p>
               </v-card-text>
             </v-card>
           </v-menu>
@@ -155,16 +159,6 @@ export default {
       "green",
       "orange",
       "grey darken-1",
-    ],
-    names: [
-      "Meeting",
-      "Holiday",
-      "PTO",
-      "Travel",
-      "Event",
-      "Birthday",
-      "Conference",
-      "Party",
     ],
     promise: null,
   }),
@@ -221,15 +215,15 @@ export default {
       this.getAllReservations();
       const events = [];
       for (let i = 0; i < this.allReservationDetails.length; i++) {
-        var value = this.allReservationDetails[i];
+        var reservationDetail = this.allReservationDetails[i];
         const allDay = this.rnd(0, 3) === 0;
-        const myStartTimeDate = new Date(`${value.date}T${value.startTime}`);
-        const myEndTimeDate = new Date(`${value.date}T${value.endTime}`);
+        const myStartTimeDate = new Date(`${reservationDetail.date}T${reservationDetail.startTime}`);
+        const myEndTimeDate = new Date(`${reservationDetail.date}T${reservationDetail.endTime}`);
         events.push({
-          name: value.username,
-          startTime: value.startTime,
-          endTime: value.endTime,
-          date: value.date,
+          name: reservationDetail.username,
+          startTime: reservationDetail.startTime,
+          endTime: reservationDetail.endTime,
+          date: reservationDetail.date,
           start: myStartTimeDate,
           end: myEndTimeDate,
           color: this.colors[this.rnd(0, this.colors.length - 1)],
