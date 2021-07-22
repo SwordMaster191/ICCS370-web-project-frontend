@@ -1,30 +1,27 @@
 <template>
   <v-container>
     <div align="center">
-        <title>Home</title>
+      <title>Home</title>
       <h1>Welcome to 3D-printer reservation</h1>
-            {{ allReservationDetails }}
       <v-col class="text-right">
         <v-btn color="error" class="ma-2" @click="logout">
           Log out</v-btn
         >
       </v-col>
     </div>
-    <h2>You have {{allReservationDetails.length}} reservations:</h2>
+    <h2>You have {{ currentUserReservations.length }} reservations:</h2>
     <v-container fluid>
       <v-row>
-        <v-col v-for="currentReservation in allReservationDetails" :key="currentReservation">
-          <v-card color="purple"
-                  dark class="mx-auto" max-width="300">
+        <v-col v-for="currentReservation in currentUserReservations" :key="currentReservation">
+          <v-card class="mx-auto" max-width="300">
             <v-card-text>
               <div>Time • Date</div>
-              <p class="text-h5">
+              <p class="text-h5 text--primary">
                 {{ currentReservation.startTime }} - {{ currentReservation.endTime }} • {{ currentReservation.date }}
               </p>
               <p>3D-printer reservation</p>
               <p>
-                Duration of usage:
-                {{ getTimeDifference(currentReservation.startTime, currentReservation.endTime) }} hr(s)
+                Duration of usage: {{ getTimeDifference(currentReservation.startTime, currentReservation.endTime) }}
               </p>
             </v-card-text>
             <v-card-actions>
@@ -173,15 +170,26 @@ export default {
       "Conference",
       "Party",
     ],
+    promise: null,
   }),
   mounted() {
     this.$refs.calendar.checkChange();
-    this.username = this.$store.state.name;
     Vue.axios.get("/api/allReservations").then(response => {
       this.allReservationDetails = response.data;
     });
+    this.promise = this.getCurrentUserReservationDetails()
+    .then(response => {
+      this.currentUserReservations = response
+    });
   },
   methods: {
+    async getCurrentUserReservationDetails() {
+      let formData = new FormData();
+      formData.append("username", this.$store.state.name);
+      let response = await Vue.axios.post("/api/currentUserReservations", formData);
+
+      return response.data;
+    },
     getTimeDifference(start, end) {
       start = start.split(":");
       end = end.split(":");
@@ -197,12 +205,6 @@ export default {
 
       return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
     },
-    async getCurrentUserReservationDetails() {
-      let formData = new FormData();
-      formData.append("username", this.$store.state.name)
-      let response = await Vue.axios.post("/api/currentUserReservations", formData)
-      return response.data;
-    },
     reloadPage() {
       window.location.reload();
     },
@@ -211,7 +213,7 @@ export default {
         let formData = new FormData();
         formData.append("startTime", startTime);
         formData.append("endTime", endTime);
-        formData.append("date", date)
+        formData.append("date", date);
         let response = await Vue.axios.post("/api/deleteReservation", formData);
 
         if (response.data.success) {
