@@ -59,11 +59,11 @@ router.beforeEach(async (to, from, next) => {
   let response = await Vue.axios.get("/api/whoami");
 
   //response.data is our payload
+  console.log(response.data);
   await store.dispatch("setLoggedInUser", response.data);
   let isLoggedIn = store.state.isLoggedIn;
-  console.log(isLoggedIn);
 
-  await store.dispatch("clearUser", response.data);
+  /*await store.dispatch("clearUser", response.data);*/
 
   if((to.name == "Login" || to.name == "Register") && isLoggedIn){
     next({name: "Home"});

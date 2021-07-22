@@ -18,18 +18,20 @@ export default new Vuex.Store({
     },
     setUsername(state, username){
       console.log(username);
-      state.username= username;
+      state.username = username;
     },
     setName(state, name){
+      console.log(name);
       state.name = name;
     },
     setRole(state, role){
+      console.log(role);
       state.role = role;
     },
   },
   actions: {
       setLoggedInUser({commit}, payload){
-        commit('setIsLoggedIn', payload.isLoggedIn);
+        commit('setIsLoggedIn', payload.loggedIn);
         commit('setUsername', payload.username);
         commit('setName', payload.name);
         commit('setRole', payload.role);
