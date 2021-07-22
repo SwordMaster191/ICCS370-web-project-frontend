@@ -3,17 +3,16 @@
     <div align="center">
         <title>Home</title>
       <h1>Welcome to 3D-printer reservation</h1>
-            {{ allReservationDetails }}
       <v-col class="text-right">
         <v-btn color="error" class="ma-2" @click="logout">
           Log out</v-btn
         >
       </v-col>
     </div>
-    <h2>You have {{allReservationDetails.length}} reservations:</h2>
+    <h2>You have {{currentUserReservations.length}} reservations:</h2>
     <v-container fluid>
       <v-row>
-        <v-col v-for="currentReservation in allReservationDetails" :key="currentReservation">
+        <v-col v-for="currentReservation in currentUserReservations" :key="currentReservation">
           <v-card color="purple"
                   dark class="mx-auto" max-width="300">
             <v-card-text>
@@ -173,6 +172,7 @@ export default {
       "Conference",
       "Party",
     ],
+    promise: null,
   }),
   mounted() {
     this.$refs.calendar.checkChange();
@@ -180,8 +180,19 @@ export default {
     Vue.axios.get("/api/allReservations").then(response => {
       this.allReservationDetails = response.data;
     });
+    this.promise = this.getCurrentUserReservationDetails()
+    .then(response => {
+      this.currentUserReservations = response;
+    })
   },
   methods: {
+    async getCurrentUserReservationDetails() {
+      let formData = new FormData();
+      formData.append("username", this.$store.state.name)
+      let response = await Vue.axios.post("/api/currentUserReservations", formData)
+
+      return response.data;
+    },
     getTimeDifference(start, end) {
       start = start.split(":");
       end = end.split(":");
@@ -196,12 +207,6 @@ export default {
         hours = hours + 24;
 
       return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
-    },
-    async getCurrentUserReservationDetails() {
-      let formData = new FormData();
-      formData.append("username", this.$store.state.name)
-      let response = await Vue.axios.post("/api/currentUserReservations", formData)
-      return response.data;
     },
     reloadPage() {
       window.location.reload();
