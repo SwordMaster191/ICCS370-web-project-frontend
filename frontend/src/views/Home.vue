@@ -3,11 +3,6 @@
     <div align="center">
         <title>Home</title>
       <h1>Welcome to 3D-printer reservation</h1>
-      <v-col class="text-right">
-        <v-btn color="error" class="ma-2" @click="logout">
-          Log out</v-btn
-        >
-      </v-col>
     </div>
     <h2>You have {{currentUserReservations.length}} reservations:</h2>
     <v-container fluid>
@@ -288,12 +283,6 @@ export default {
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
-    async logout () {
-      let response = await Vue.axios.get("/api/logout")
-      if (response.data.success){
-        this.$router.push({ path: "/login" });
-      }
-    }
   },
 };
 </script>
