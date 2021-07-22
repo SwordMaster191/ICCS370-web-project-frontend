@@ -2,7 +2,6 @@
   <v-container>
     <div align="center">
         <title>Home</title>
-      <h1>Welcome to 3D-printer reservation</h1>
       <v-col class="text-right">
         <v-btn color="error" class="ma-2" @click="logout">
           Log out</v-btn
@@ -13,14 +12,15 @@
     <v-container fluid>
       <v-row>
         <v-col v-for="currentReservation in currentUserReservations" :key="currentReservation">
-          <v-card color="purple"
-                  dark class="mx-auto" max-width="300">
+          <v-card color="purple" dark class="mx-auto" max-width="300">
             <v-card-text>
               <div>Time • Date</div>
               <p class="text-h5">
                 {{ currentReservation.startTime }} - {{ currentReservation.endTime }} • {{ currentReservation.date }}
               </p>
-              <p>3D-printer reservation</p>
+              <p> 3D-printer reservation <br/>
+                Scheduled for {{ currentReservation.username }}
+              </p>
               <p>
                 Duration of usage:
                 {{ getTimeDifference(currentReservation.startTime, currentReservation.endTime) }} hr(s)
@@ -45,7 +45,6 @@
         <Book></Book>
       </div>
     </div>
-
     <v-row class="fill-height">
       <v-col>
         <v-sheet height="64">
@@ -110,16 +109,13 @@
           >
             <v-card color="grey lighten-4" min-width="350px" flat>
               <v-toolbar :color="selectedEvent.color" dark>
-                <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                <v-toolbar-title v-html="selectedEvent.username"></v-toolbar-title>
               </v-toolbar>
               <v-card-text>
-                <span v-html="selectedEvent.details"></span>
+                <span v-html="selectedEvent.startTime"></span>
+                <span v-html="selectedEvent.endTime"></span>
+                <span v-html="selectedEvent.date"></span>
               </v-card-text>
-              <v-card-actions>
-                <v-btn text color="secondary" @click="selectedOpen = false">
-                  Cancel
-                </v-btn>
-              </v-card-actions>
             </v-card>
           </v-menu>
         </v-sheet>
@@ -129,7 +125,6 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
 import Vue from "vue";
 import Book from "./Book.vue";
 
@@ -139,7 +134,6 @@ export default {
     Book,
   },
   data: () => ({
-    username: "",
     currentUserReservations: [],
     allReservationDetails: [],
     focus: "",
@@ -175,8 +169,6 @@ export default {
     promise: null,
   }),
   mounted() {
-    this.$refs.calendar.checkChange();
-    this.username = this.$store.state.name;
     Vue.axios.get("/api/allReservations").then(response => {
       this.allReservationDetails = response.data;
     });
@@ -184,12 +176,75 @@ export default {
     .then(response => {
       this.currentUserReservations = response;
     })
+    this.$refs.calendar.checkChange();
   },
   methods: {
+    viewDay({ date }) {
+      this.focus = date;
+      this.type = "day";
+    },
+    getEventColor(event) {
+      return event.color;
+    },
+    setToday() {
+      this.focus = "";
+    },
+    prev() {
+      this.$refs.calendar.prev();
+    },
+    next() {
+      this.$refs.calendar.next();
+    },
+    showEvent({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event;
+        this.selectedElement = nativeEvent.target;
+        requestAnimationFrame(() =>
+            requestAnimationFrame(() => (this.selectedOpen = true))
+        );
+      };
+      if (this.selectedOpen) {
+        this.selectedOpen = false;
+        requestAnimationFrame(() => requestAnimationFrame(() => open()));
+      }
+      else {
+        open();
+      }
+      nativeEvent.stopPropagation();
+    },
+    getAllReservations() {
+      Vue.axios.get("/api/allReservations").then(response => {
+        this.allReservationDetails = response.data;
+      });
+    },
+    updateRange() {
+      this.getAllReservations();
+      const events = [];
+      for (let i = 0; i < this.allReservationDetails.length; i++) {
+        var value = this.allReservationDetails[i];
+        const allDay = this.rnd(0, 3) === 0;
+        const myStartTimeDate = new Date(`${value.date}T${value.startTime}`);
+        const myEndTimeDate = new Date(`${value.date}T${value.endTime}`);
+        events.push({
+          name: value.username,
+          startTime: value.startTime,
+          endTime: value.endTime,
+          date: value.date,
+          start: myStartTimeDate,
+          end: myEndTimeDate,
+          color: this.colors[this.rnd(0, this.colors.length - 1)],
+          timed: !allDay,
+        });
+      }
+      this.events = events;
+    },
+    rnd(a, b) {
+      return Math.floor((b - a + 1) * Math.random()) + a;
+    },
     async getCurrentUserReservationDetails() {
       let formData = new FormData();
-      formData.append("username", this.$store.state.name)
-      let response = await Vue.axios.post("/api/currentUserReservations", formData)
+      formData.append("username", this.$store.state.name);
+      let response = await Vue.axios.post("/api/currentUserReservations", formData);
 
       return response.data;
     },
@@ -230,63 +285,6 @@ export default {
     },
     async book() {
       this.$router.push({ path: "/booking" });
-    },
-    viewDay({ date }) {
-      this.focus = date;
-      this.type = "day";
-    },
-    getEventColor(event) {
-      return event.color;
-    },
-    setToday() {
-      this.focus = "";
-    },
-    prev() {
-      this.$refs.calendar.prev();
-    },
-    next() {
-      this.$refs.calendar.next();
-    },
-    showEvent({ nativeEvent, event }) {
-      const open = () => {
-        this.selectedEvent = event;
-        this.selectedElement = nativeEvent.target;
-        requestAnimationFrame(() =>
-            requestAnimationFrame(() => (this.selectedOpen = true))
-        );
-      };
-      if (this.selectedOpen) {
-        this.selectedOpen = false;
-        requestAnimationFrame(() => requestAnimationFrame(() => open()));
-      } else {
-        open();
-      }
-      nativeEvent.stopPropagation();
-    },
-    updateRange({ start, end }) {
-      const events = [];
-      const min = new Date(`${start.date}T00:00:00`);
-      const max = new Date(`${end.date}T23:59:59`);
-      const days = (max.getTime() - min.getTime()) / 86400000;
-      const eventCount = this.rnd(days, days + 20);
-      for (let i = 0; i < eventCount; i++) {
-        const allDay = this.rnd(0, 3) === 0;
-        const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-        const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        const second = new Date(first.getTime() + secondTimestamp);
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: first,
-          end: second,
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          timed: !allDay,
-        });
-      }
-      this.events = events;
-    },
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a;
     },
     async logout () {
       let response = await Vue.axios.get("/api/logout")
