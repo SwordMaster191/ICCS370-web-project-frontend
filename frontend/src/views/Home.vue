@@ -2,11 +2,6 @@
   <v-container>
     <div align="center">
         <title>Home</title>
-      <v-col class="text-right">
-        <v-btn color="error" class="ma-2" @click="logout">
-          Log out</v-btn
-        >
-      </v-col>
     </div>
     <h2>You have {{currentUserReservations.length}} reservations:</h2>
     <v-container fluid>
@@ -280,12 +275,6 @@ export default {
     async book() {
       this.$router.push({ path: "/booking" });
     },
-    async logout () {
-      let response = await Vue.axios.get("/api/logout")
-      if (response.data.success){
-        this.$router.push({ path: "/login" });
-      }
-    }
   },
 };
 </script>
