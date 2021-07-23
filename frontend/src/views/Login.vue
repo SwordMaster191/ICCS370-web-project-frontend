@@ -82,8 +82,7 @@
                       <v-card-text>
                         <p>
                           This project is a collaborative effort between Krit
-                          Visitstump, James Kaewanan, Rinradee Sae-Lao, and
-                          Natthakan Euaumpon.
+                          Visitstump, James Kaewanan, and Rinradee Sae-Lao.
                         </p>
 
                         <p>Project: Room 1408 3D printer booking system</p>
